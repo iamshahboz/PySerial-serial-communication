@@ -3,6 +3,7 @@ import time
 from schemas import Car
 import logging
 
+
 logger = logging.getLogger()
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s %(levelname)s]: %(message)s"
@@ -58,7 +59,7 @@ def serialize(data: Car)->bytes:
     '''
     Serializing the message
     '''
-    ...
+    return data.to_bytes()
         
     
 def deserialize(data:bytes) -> Car:
