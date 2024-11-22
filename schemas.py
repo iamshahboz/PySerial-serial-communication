@@ -62,5 +62,22 @@ class Car(BaseModel):
     
     @classmethod
     def from_bytes(cls, data: bytes):
-        ...
-        decripted = rsa.decrypt(data, privateKey).decode()
+        '''
+        Convert bytes back to a Car object
+        '''
+        separator = b'\xFF'
+        
+        # Decrypt the data
+        decrypted_data = rsa.decrypt(data, privateKey).decode('utf-8')
+        
+        # Split the decrypted data using the separator
+        model_name, year_str, color_value, price_str = decrypted_data.split(separator.decode('utf-8'))
+        
+        # Parse the data back into appropriate types
+        model = CarModel[model_name]  # Access Enum by name
+        year = int(year_str)
+        color = CarColour(color_value) if color_value else None  # Handle optional color
+        price = float(price_str)
+        
+        # Return the Car instance
+        return cls(model=model, year=year, color=color, price=price)

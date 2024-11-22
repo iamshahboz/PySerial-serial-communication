@@ -48,11 +48,27 @@ class RadioController:
         self.radio_port.write(serialized)
         
     def get_next_message(self) -> Car:
-        if self.radio_port.in_waiting <=0:
-            return None 
-        deserialized = deserialize()
-        logger.info('Deserializing message...')
-        logger.info(f'[RECEIVED] Radio message {deserialized}')
+        if self.mock:
+            return None  # Skip if in mock mode
+
+        if self.radio_port.in_waiting <= 0:
+            return None  # No data available to read
+
+        try:
+            # Read all available bytes from the serial port
+            raw_data = self.radio_port.read_all()
+            
+            # Deserialize the data into a Car object
+            deserialized = deserialize(raw_data)
+            
+            # Log the deserialization process
+            logger.info("Deserializing message...")
+            logger.info(f"[RECEIVED] Radio message: {deserialized}")
+            
+            return deserialized
+        except Exception as e:
+            logger.error(f"Error while reading or deserializing message: {e}")
+            return None
         
         
 def serialize(data: Car)->bytes:
@@ -63,9 +79,11 @@ def serialize(data: Car)->bytes:
         
     
 def deserialize(data:bytes) -> Car:
-    '''
-    Deserialize and get the message itself
-    '''
+    try:
+        return Car.from_bytes(data)
+    except Exception as e:
+        logger.error(f"Failed to deserialize message: {e}")
+        raise ValueError("Invalid data received for deserialization.")
 
         
             
