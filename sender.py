@@ -10,8 +10,16 @@ class RadioMsg(BaseModel):
     '''
     pass
 
-
-message = Car(model=CarModel.TOYOTA, year=2012, color=CarColour.BLACK, price=8000)
-# initialize RadioController class
 radio = RadioController()
-radio.send(msg=message)
+
+
+def send_message():
+    message = Car(model=CarModel.TOYOTA, year=2012, color=CarColour.BLACK, price=8000)
+    radio.send(msg=message)
+    
+
+
+
+
+if __name__ == "__main__":
+    send_message()

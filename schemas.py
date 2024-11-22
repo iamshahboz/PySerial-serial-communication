@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from enum import Enum
-from typing import Optional 
-
+from typing import Optional
 
 
 # Enum class for Car models
@@ -35,19 +34,26 @@ class Car(BaseModel):
     year: int
     color: Optional[CarColour]
     price: float
+
+    
     
     def to_bytes(self):
+        
         '''
         Convert the data of the class to bytes
         '''
-        bytes_list = []
+        separator = b'\xFF'  
         model_to_bytes = self.model.name.encode('utf-8')
         year_to_bytes = str(self.year).encode('utf-8')
-        color_to_bytes = self.color.value.encode('utf-8')
-        price_to_bytes = str(self.price).encode('utf-8')
-        bytes_list.extend(model_to_bytes)
-        bytes_list.extend(year_to_bytes)
-        bytes_list.extend(color_to_bytes)
-        bytes_list.extend(price_to_bytes)
-        return bytes_list
+        color_to_bytes = (self.color.value if self.color else "").encode('utf-8')
+        price_to_bytes = f'{self.price:.2f}'.encode('utf-8')
+        
+        combined_data = separator.join([model_to_bytes, year_to_bytes, color_to_bytes, price_to_bytes])
+        
+
+        return combined_data
     
+    
+    @classmethod
+    def from_bytes(cls, data: bytes):
+        ...
