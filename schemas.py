@@ -1,22 +1,11 @@
 from pydantic import BaseModel
 from enum import Enum
 from typing import Optional
+import rsa
 
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
-from Crypto.Random import get_random_bytes
-from base64 import b64encode, b64decode
 
-# Generate RSA keys
-key = RSA.generate(2048)
-public_key = key.publickey()
-private_key = key
+publicKey, privateKey = rsa.newkeys(512)
 
-# Encrypting data
-def encrypt_data(data: str, public_key):
-    cipher = PKCS1_OAEP.new(public_key)
-    encrypted_data = cipher.encrypt(data)
-    return b64encode(encrypted_data)
 
 
 # Enum class for Car models
@@ -66,7 +55,7 @@ class Car(BaseModel):
         
         combined_data = separator.join([model_to_bytes, year_to_bytes, color_to_bytes, price_to_bytes])
         
-        encrypt = encrypt_data(combined_data, public_key=public_key)
+        encrypt = rsa.encrypt(combined_data, publicKey)
 
         return encrypt
     
@@ -74,3 +63,4 @@ class Car(BaseModel):
     @classmethod
     def from_bytes(cls, data: bytes):
         ...
+        #decMessage = rsa.decrypt(encMessage, privateKey).decode()
