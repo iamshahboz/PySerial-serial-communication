@@ -50,7 +50,7 @@ class RadioController:
     def get_next_message(self) -> Car:
         if self.radio_port.in_waiting <=0:
             return None 
-        deserialized = deserialize(data=msg)
+        deserialized = deserialize()
         logger.info('Deserializing message...')
         logger.info(f'[RECEIVED] Radio message {deserialized}')
         
