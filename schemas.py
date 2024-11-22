@@ -63,4 +63,4 @@ class Car(BaseModel):
     @classmethod
     def from_bytes(cls, data: bytes):
         ...
-        #decMessage = rsa.decrypt(encMessage, privateKey).decode()
+        decripted = rsa.decrypt(data, privateKey).decode()
